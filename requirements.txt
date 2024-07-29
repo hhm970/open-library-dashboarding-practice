@@ -2,3 +2,6 @@ requests
 pandas
 altair
 streamlit
+python-dotenv
+pytest
+pylint
