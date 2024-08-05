@@ -1,4 +1,5 @@
 .env
 /venv
 .venv
-*.json
+2*.json
+*.ipynb
