@@ -1,5 +1,5 @@
 .env
-/venv
+*/venv
 .venv
 2*.json
 *.ipynb

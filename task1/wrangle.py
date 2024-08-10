@@ -1,7 +1,6 @@
 """Using our extracted JSON file, we form a pandas DataFrame containing details
 of each book """
 
-from datetime import datetime
 import json
 
 import pandas as pd
@@ -35,8 +34,6 @@ def create_pd_df(api_response: dict) -> pd.DataFrame:
     publish_dates = []
 
     for doc in api_response["docs"]:
-
-        print(api_response["docs"].index(doc))
 
         try:
             book_titles.append(doc["title"])
@@ -75,20 +72,24 @@ def create_pd_df(api_response: dict) -> pd.DataFrame:
     return result_df
 
 
-def remove_duplicate_titles_no_case(input_df: pd.DataFrame) -> pd.DataFrame:
+def remove_nan_values_format_cols_df(input_df: pd.DataFrame) -> pd.DataFrame:
     """
-    Given a pd.DataFrame object with a column 'book_title', we
-    remove duplicate values via a case-insensitive comparison.
+    Given a pd.DataFrame object, returns the object such that all empty
+    values are removed, and the 'no_of_languages' column stores integers.
     """
-    pass
+    result_df = input_df.dropna().reset_index()
+
+    result_df["no_of_languages"] = result_df["no_of_languages"].astype("int64")
+
+    return result_df
 
 
 if __name__ == "__main__":
 
     lotr_data = load_json_data("2024-08-05_the+lord+of+the+rings.json")[0]
 
-    # print(lotr_data["docs"][5])
-
     lotr_df = create_pd_df(lotr_data)
 
-    print(lotr_df.head())
+    lotr_df_no_nan = remove_nan_values_format_cols_df(lotr_df)
+
+    print(lotr_df_no_nan)
