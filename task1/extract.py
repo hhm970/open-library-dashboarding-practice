@@ -19,8 +19,7 @@ SEARCH_QUERY_TITLE = "the+lord+of+the+rings"
 def get_lord_of_the_rings_books() -> list[dict]:
     """Returns all books with the title 'lord of the rings'."""
 
-    response = requests.get(
-        ENV["API_BASE_URL"] + f".json?title={SEARCH_QUERY_TITLE}",
+    response = requests.get(f"{ENV["API_BASE_URL"]}.json?title={SEARCH_QUERY_TITLE}",
         timeout=10)
 
     if response.status_code == 200:
@@ -54,7 +53,7 @@ if __name__ == "__main__":
 
     today_date = datetime.today().strftime('%Y-%m-%d')
 
-    json_filename = f"{today_date}_{SEARCH_QUERY_TITLE}.json"
+    json_filename = f"{today_date}_title={SEARCH_QUERY_TITLE}.json"
 
     extracted_data = get_lord_of_the_rings_books()
 
