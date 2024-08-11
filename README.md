@@ -25,4 +25,42 @@ We would like you to showcase your Python (or other coding language e.g. Java, G
 + Efficiency and error handling 
 + Creativity and approach to high-level dataset exploration
 
-This challenge will assess your ability to interact with APIs, parse data, and perform basic data exploration using your language of choice. 
+This challenge will assess your ability to interact with APIs, parse data, and perform basic data exploration using your language of choice.
+
+
+# Howard Man's submission for the Datatonic Graduate Programme Technical Exercise
+
+## Overview
+
+## Requirements
+
+### Pre-requisites
+
+- ```Python 3.11```
+- `pip3`
+- `Terraform`
+
+### Imports
+Each sub-folder in this repository holds their own `requirements.txt` file. This is has been done to ensure clarity in what modules the scripts require.
+
+In each folder's directory to download the requirements use this command:
+
+```sh
+pip3 install -r requirements.txt
+  ```
+
+It is advised to run this command in a virtual environment (where each individual directory has its own virtual environment).
+
+## Overview of Directories
+
+This repository contains the following directories:
+
+- `task1`: Contains code related to Task 1 of the Technical Exercise.
+    - Uses the environment variable `API_BASE_URL = "https://openlibrary.org/search"`.
+    - To run the code in this directory, input `python3 main.py` into the command-line interface.
+
+- `task2_task3`: Contains code related to Tasks 2 and 3 of the Technical Exercise.
+    - Uses the environment variable `API_BASE_URL = "https://openlibrary.org/search"`.
+    - To run the code in this directory, input `python3 -m streamlit run main.py` into the command-line interface
+
+

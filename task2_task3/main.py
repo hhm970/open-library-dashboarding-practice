@@ -61,10 +61,10 @@ def setup_3_charts(input_df: pd.DataFrame) -> None:
     with right:
         st.altair_chart(rating_bar_chart,
                         use_container_width=True)
+        
 
-if __name__ == "__main__":
-
-    load_dotenv()
+def extract_wrangle_pd_df() -> pd.DataFrame:
+    """Contains relevant steps for extraction and wrangling of data."""
 
     today_date = datetime.today().strftime('%Y-%m-%d')
 
@@ -96,12 +96,21 @@ if __name__ == "__main__":
 
         formatted_space_df = pd.read_csv(f"./{csv_filename}")
 
+    return formatted_space_df
+
+
+if __name__ == "__main__":
+
+    load_dotenv()
+
+    space_df = extract_wrangle_pd_df()
+
     st.title("Welcome!")
     st.write("---")
     st.subheader("Containing all data from your favourite space-themed books!")
 
-    setup_metrics(formatted_space_df)
+    setup_metrics(space_df)
 
-    setup_yearly_books_line_chart(formatted_space_df)
+    setup_yearly_books_line_chart(space_df)
 
-    setup_3_charts(formatted_space_df)
+    setup_3_charts(pace_df)
