@@ -113,4 +113,4 @@ if __name__ == "__main__":
 
     setup_yearly_books_line_chart(space_df)
 
-    setup_3_charts(pace_df)
+    setup_3_charts(space_df)
