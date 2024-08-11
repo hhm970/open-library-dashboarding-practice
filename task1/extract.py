@@ -19,7 +19,7 @@ SEARCH_QUERY_TITLE = "the+lord+of+the+rings"
 def get_lord_of_the_rings_books() -> list[dict]:
     """Returns all books with the title 'lord of the rings'."""
 
-    response = requests.get(f"{ENV["API_BASE_URL"]}.json?title={SEARCH_QUERY_TITLE}",
+    response = requests.get(f"{ENV['API_BASE_URL']}.json?title={SEARCH_QUERY_TITLE}",
         timeout=10)
 
     if response.status_code == 200:
@@ -43,6 +43,8 @@ def api_data_into_json(json_data: dict, json_file: str) -> None:
 
         with open(json_file, "w", encoding="utf-8") as g:
             json.dump(existing_data, g, indent=4)
+
+        return existing_data
 
     return None
 

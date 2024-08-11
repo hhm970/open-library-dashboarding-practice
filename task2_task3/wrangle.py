@@ -79,7 +79,7 @@ def create_pd_df(api_response: dict) -> pd.DataFrame:
     return result_df
 
 
-def remove_duplic_nan_values_format_cols_df(input_df: pd.DataFrame) -> pd.DataFrame:
+def remove_duplicate_nan_values_format_cols_df(input_df: pd.DataFrame) -> pd.DataFrame:
     """
     Given a pd.DataFrame object, returns the object such that all empty
     values are removed, and the 'no_of_languages' column stores integers.
@@ -101,8 +101,6 @@ if __name__ == "__main__":
 
     space_df = create_pd_df(space_data)
 
-    formatted_space_df = remove_duplic_nan_values_format_cols_df(space_df)
-
-    formatted_space_df
+    formatted_space_df = remove_duplicate_nan_values_format_cols_df(space_df)
 
     print(formatted_space_df)

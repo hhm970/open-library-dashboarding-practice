@@ -17,7 +17,6 @@ SPACE_SEARCH_QUERIES=['space', 'space+flight', 'space+station',
                       'outer+space', 'space+exploration', 'space+and+time',
                       'space+vehicles', 'space+warfare', 'space+shuttles',
                       'space+stations', 'space+ships', 'moon', 'mars']
-YEAR_OF_MOON_LANDING=1969
 
 
 def get_all_queries_responses() -> list[dict]:

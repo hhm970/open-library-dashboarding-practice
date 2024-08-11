@@ -2,4 +2,5 @@
 */venv
 .venv
 2*.json
+2*.csv
 *.ipynb

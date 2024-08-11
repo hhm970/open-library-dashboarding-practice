@@ -4,4 +4,4 @@ python-dotenv
 pytest
 pylint
 streamlit
-vega-altair
+altair
