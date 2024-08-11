@@ -1,7 +1,6 @@
 """
 Python script which, given an API base URL specified in an .env file, will
-request JSON data of books for each of the search queries 'space', 'space flight', 
-'space station', 'outer_space', 'space_exploration'.
+request JSON data of books for each search query in SPACE_SEARCH_QUERIES.
 Each response will be written into a JSON file, named after the date the response 
 was extracted, as well as the search query.
 """
@@ -14,8 +13,10 @@ import requests
 from dotenv import load_dotenv
 
 
-SPACE_SEARCH_QUERIES=['space', 'space+flight', 'space+station', 
-                      'outer+space', 'space+exploration']
+SPACE_SEARCH_QUERIES=['space', 'space+flight', 'space+station',
+                      'outer+space', 'space+exploration', 'space+and+time',
+                      'space+vehicles', 'space+warfare', 'space+shuttles',
+                      'space+stations', 'space+ships', 'moon', 'mars']
 YEAR_OF_MOON_LANDING=1969
 
 
@@ -41,19 +42,13 @@ def get_all_queries_responses() -> list[dict]:
     return result
 
 
-def api_data_into_json(json_data: dict, json_file: str) -> None:
+def api_data_into_json(json_data: list[dict], json_file: str) -> None:
     """Given a JSON dict object, it writes it into a JSON file of a given name."""
 
     if len(json_data) != 0:
 
-        existing_data = []
-
-        existing_data.append(json_data)
-
         with open(json_file, "w", encoding="utf-8") as g:
-            json.dump(existing_data, g, indent=4)
-
-    return None
+            json.dump(json_data, g, indent=4)
 
 
 if __name__ == "__main__":
