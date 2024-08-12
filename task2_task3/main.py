@@ -2,6 +2,7 @@
 Python script to be run to produce Streamlit dashboard showcasing
 data insights.
 """
+
 from datetime import datetime
 from os import path
 

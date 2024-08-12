@@ -1,5 +1,9 @@
-"""Using our extracted JSON file, we form a pandas DataFrame containing details
-of each book """
+"""
+Using our extracted JSON file, we form a pandas DataFrame containing details
+of each book, including the book title, author name, number of languages published,
+average rating of the book, and all dates the book was published. The data is then
+cleaned for duplicates and empty values.
+"""
 
 import json
 

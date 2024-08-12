@@ -1,4 +1,5 @@
-"""Python script to produce"""
+"""Python script to produce diagrams for the final dashboard."""
+
 from datetime import datetime
 
 import pandas as pd
@@ -29,11 +30,12 @@ def create_yearly_count_books_100yrs(input_df: pd.DataFrame) -> pd.DataFrame:
 
     years_df = input_df["first_published"].value_counts().reset_index()
 
-    years_df = years_df.rename(columns={'first_published': 'Year Published'})
+    years_df = years_df.rename(columns={'first_published': 'Year Published',
+                                        'count': 'Number of Books Published'})
 
     years_df["last_100_years"] = years_df["Year Published"].apply(last_100_years)
 
-    years_df = years_df[years_df["last_100_years"] is True].reset_index()
+    years_df = years_df[years_df["last_100_years"] == True].reset_index()
 
     years_df.drop(columns=['last_100_years', 'index'], inplace=True)
 
@@ -57,16 +59,11 @@ def create_yearly_count_books_100yrs(input_df: pd.DataFrame) -> pd.DataFrame:
 def create_books_released_per_year(input_df: pd.DataFrame) -> alt.Chart:
     """Returns a line chart showcasing the number of books released per year."""
 
-    chart = alt.Chart(input_df, title='Book Releases by Year').mark_line().encode(
+    chart = alt.Chart(input_df, 
+                title='Book Releases by Year').mark_line().encode(
         x=alt.X('Year Published:N'),
-        y='count:Q'
+        y='Number of Books Published:Q'
     )
-
-    # x_rule = (
-    #     alt.Chart()
-    #     .mark_rule(color="red", strokeWidth=1)
-    #     .encode(x=alt.datum(1969))
-    # )
 
     return chart
 
@@ -77,15 +74,15 @@ def create_books_languages_bar_chart(input_df: pd.DataFrame) -> alt.Chart:
 
     language_df = input_df[['book_title', 'no_of_languages']]
 
-    language_df = language_df[language_df['no_of_languages'] >= 2]
+    language_df.sort_values(by=['no_of_languages'], inplace=True, ascending=False)
 
-    language_df.sort_values(by=['no_of_languages'], inplace=True)
+    language_df = language_df.iloc[[str(i) for i in range(10)]]
 
     language_df = language_df.rename(columns={'book_title': 'Book Title',
-                                              'no_of_languages': 'Number of Languages'})
+                                'no_of_languages': 'Number of Languages'})
 
     chart = alt.Chart(language_df,
-        title="Number of published languages per book (books with multiple languages)"
+        title="Top 10 books published in the most languages"
         ).mark_bar().encode(
             x=alt.X('Number of Languages:Q'),
             y='Book Title:N'
@@ -99,14 +96,17 @@ def create_books_authors_pie_chart(input_df: pd.DataFrame) -> alt.Chart:
 
     author_df = input_df[['book_title', 'author_name']]
 
-    data = author_df['author_name'].value_counts().reset_index()
+    author_data = author_df['author_name'].value_counts().reset_index()
 
-    data = data[data['count'] >= 2].sort_values(by=['count'])
+    author_data = author_data.sort_values(by=['count'], ascending=False)
 
-    data = data.rename(columns={'author_name': 'Author', 'count': 'Number of Books'})
+    author_data = author_data.iloc[[str(i) for i in range(10)]]
 
-    chart = alt.Chart(data,
-        title="Number of books published per author (with more than one book)"
+    author_data = author_data.rename(columns={'author_name': 'Author',
+                                              'count': 'Number of Books'})
+
+    chart = alt.Chart(author_data,
+        title="Top 10 authors with the most books published"
         ).mark_arc().encode(
             color='Author',
             theta='Number of Books:Q'
@@ -120,12 +120,15 @@ def create_books_rating_bar_chart(input_df: pd.DataFrame) -> alt.Chart:
 
     rating_df = input_df[['book_title', 'average_rating']]
 
-    rating_df.sort_values(by=['average_rating'], inplace=True)
+    rating_df.sort_values(by=['average_rating'], inplace=True, ascending=False)
+
+    rating_df = rating_df.iloc[[str(i) for i in range(10)]]
 
     rating_df = rating_df.rename(columns={'book_title': 'Book Title',
                                           'average_rating': 'Average Rating'})
 
-    chart = alt.Chart(rating_df, title="Average Rating of Books").mark_bar().encode(
+    chart = alt.Chart(rating_df, 
+            title="Top 10 Books with the highest rating").mark_bar().encode(
         x=alt.X('Average Rating:Q'),
         y='Book Title'
     )
@@ -140,3 +143,7 @@ if __name__ == "__main__":
     space_df = create_pd_df(space_data)
 
     formatted_space_df = remove_duplicate_nan_values_format_cols_df(space_df)
+
+    years_df = create_yearly_count_books_100yrs(formatted_space_df)
+
+    create_books_released_per_year(years_df)
