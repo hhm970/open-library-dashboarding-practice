@@ -101,7 +101,7 @@ def remove_duplicate_nan_values_format_cols_df(input_df: pd.DataFrame) -> pd.Dat
 
 if __name__ == "__main__":
 
-    space_data = load_json_data("2024-08-11_space.json")
+    space_data = load_json_data("2024-09-16_multi.json")
 
     space_df = create_pd_df(space_data)
 

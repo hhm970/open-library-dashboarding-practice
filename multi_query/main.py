@@ -18,6 +18,7 @@ from diagrams import (create_books_released_per_year,
                       create_books_authors_pie_chart,
                       create_books_rating_bar_chart)
 
+API_BASE_URL = "https://openlibrary.org/search"
 SPACE_SEARCH_QUERIES=['space', 'space+flight', 'space+station',
                       'outer+space', 'space+exploration', 'space+and+time',
                       'space+vehicles', 'space+warfare', 'space+shuttles',
@@ -69,35 +70,36 @@ def extract_wrangle_pd_df() -> pd.DataFrame:
 
     today_date = datetime.today().strftime('%Y-%m-%d')
 
-    json_filename = f"{today_date}_space.json"
+    json_filename = f"{today_date}_multi.json"
 
-    csv_filename = f"{today_date}_space.csv"
+    csv_filename = f"{today_date}_multi.csv"
 
     if not path.isfile(f"./{json_filename}"):
 
-        space_data = get_all_queries_responses()
+        multi_query_data = get_all_queries_responses()
 
-        if space_data is not None:
+        if multi_query_data is not None:
 
-            api_data_into_json(space_data, json_filename)
+            api_data_into_json(multi_query_data, json_filename)
 
     else:
 
-        space_data = load_json_data(json_filename)
+        multi_query_data = load_json_data(json_filename)
 
     if not path.isfile(f"./{csv_filename}"):
 
-        space_df = create_pd_df(space_data)
+        multi_query_df = create_pd_df(multi_query_data)
 
-        formatted_space_df = remove_duplicate_nan_values_format_cols_df(space_df)
+        formatted_multi_df = remove_duplicate_nan_values_format_cols_df(
+            multi_query_df)
 
-        formatted_space_df.to_csv(f"./{csv_filename}", index=False)
+        formatted_multi_df.to_csv(f"./{csv_filename}", index=False)
 
     else:
 
-        formatted_space_df = pd.read_csv(f"./{csv_filename}")
+        formatted_multi_df = pd.read_csv(f"./{csv_filename}")
 
-    return formatted_space_df
+    return formatted_multi_df
 
 
 if __name__ == "__main__":

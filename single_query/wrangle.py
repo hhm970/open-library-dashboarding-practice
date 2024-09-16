@@ -1,8 +1,15 @@
 """
 Using our extracted JSON file, we form a pandas DataFrame containing details
-of each book, including the book title, author name, number of languages published,
-average rating of the book, and all dates the book was published. The data is then
-cleaned for duplicates and empty values.
+of each book.
+
+Details include:
+• The book title, 
+• Author name, 
+• Number of languages published,
+• Average rating of the book, 
+• All dates the book was published. 
+
+The data is then cleaned for duplicates and empty values.
 """
 
 import json
@@ -90,10 +97,10 @@ def remove_nan_values_format_cols_df(input_df: pd.DataFrame) -> pd.DataFrame:
 
 if __name__ == "__main__":
 
-    lotr_data = load_json_data("2024-08-05_the+lord+of+the+rings.json")[0]
+    lotr_data = load_json_data("2024-09-16_title=the+lord+of+the+rings.json")[0]
 
     lotr_df = create_pd_df(lotr_data)
 
     lotr_df_no_nan = remove_nan_values_format_cols_df(lotr_df)
 
-    print(lotr_df_no_nan)
+    print(lotr_df_no_nan.head())

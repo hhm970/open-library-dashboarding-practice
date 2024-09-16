@@ -1,8 +1,13 @@
 """
-Python script which, given an API base URL specified in an .env file, will
-request JSON data of books with a title containing 'lord of the rings'.
+Python script which, given an API base URL, will request JSON data of books,
+such that the title of the books correspond to a given search query, which is
+stated as an environment variable.
+
+(Eg. the search query for all titles containing the phrase 'the lord of the rings'
+would be 'the+lord+of+the+rings').
+
 This data will be written into a JSON file, named after the date the response 
-was extracted, as well as the search query title.
+was extracted, as well as the search query.
 """
 
 from datetime import datetime
@@ -13,13 +18,14 @@ import requests
 from dotenv import load_dotenv
 
 
-SEARCH_QUERY_TITLE = "the+lord+of+the+rings"
+API_BASE_URL = "https://openlibrary.org/search"
 
 
-def get_lord_of_the_rings_books() -> list[dict]:
-    """Returns all books with the title 'lord of the rings'."""
+def get_search_query_title_books() -> list[dict]:
+    """Returns all books satisfying a given title search query."""
 
-    response = requests.get(f"{ENV['API_BASE_URL']}.json?title={SEARCH_QUERY_TITLE}",
+    response = requests.get(
+        f"{API_BASE_URL}.json?title={ENV['SEARCH_QUERY_TITLE']}",
         timeout=10)
 
     if response.status_code == 200:
@@ -28,7 +34,7 @@ def get_lord_of_the_rings_books() -> list[dict]:
 
         return result
 
-    print("Failed to retrieve data from the API. Status code:",
+    print("Failed to retrieve data from the API. Status code: ",
           response.status_code)
 
 
@@ -55,9 +61,9 @@ if __name__ == "__main__":
 
     today_date = datetime.today().strftime('%Y-%m-%d')
 
-    json_filename = f"{today_date}_title={SEARCH_QUERY_TITLE}.json"
+    json_filename = f"{today_date}_title={ENV['SEARCH_QUERY_TITLE']}.json"
 
-    extracted_data = get_lord_of_the_rings_books()
+    extracted_data = get_search_query_title_books()
 
     if extracted_data is not None and not path.isfile(f"./{json_filename}"):
         api_data_into_json(extracted_data, json_filename)

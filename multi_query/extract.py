@@ -1,8 +1,14 @@
 """
-Python script which, given an API base URL specified in an .env file, will
-request JSON data of books for each search query in SPACE_SEARCH_QUERIES.
-Each response will be written into a JSON file, named after the date the response 
-was extracted, as well as the search query.
+Python script which, given an API base URL and a list of search queries - stated
+as environment variables - will request JSON data of books, where each title of
+the books satisfy at least one search query.
+
+(Eg. if the list of search queries is ['green+apple', 'banana+cake', 'pear'],
+every book in the response will have a title containing one or more of the 
+phrases 'green apple', 'banana cake', 'pear').
+
+Each response will be written into a JSON file, and this file will be named after
+the date the response was extracted, as well as the search query.
 """
 
 from datetime import datetime
@@ -13,7 +19,8 @@ import requests
 from dotenv import load_dotenv
 
 
-SPACE_SEARCH_QUERIES=['space', 'space+flight', 'space+station',
+API_BASE_URL = "https://openlibrary.org/search"
+SEARCH_QUERIES_LIST=['space', 'space+flight', 'space+station',
                       'outer+space', 'space+exploration', 'space+and+time',
                       'space+vehicles', 'space+warfare', 'space+shuttles',
                       'space+stations', 'space+ships', 'moon', 'mars']
@@ -25,9 +32,9 @@ def get_all_queries_responses() -> list[dict]:
 
     result = []
 
-    for query in SPACE_SEARCH_QUERIES:
+    for query in SEARCH_QUERIES_LIST:
 
-        response = requests.get(f"{ENV['API_BASE_URL']}.json?q={query}",
+        response = requests.get(f"{API_BASE_URL}.json?q={query}",
             timeout=15)
 
         if response.status_code == 200:
@@ -52,13 +59,11 @@ def api_data_into_json(json_data: list[dict], json_file: str) -> None:
 
 if __name__ == "__main__":
 
-    load_dotenv()
-
     today_date = datetime.today().strftime('%Y-%m-%d')
 
-    json_filename = f"{today_date}_space.json"
+    json_filename = f"{today_date}_multi.json"
 
-    space_data = get_all_queries_responses()
+    multi_query_data = get_all_queries_responses()
 
-    if space_data is not None and not path.isfile(f"./{json_filename}"):
-        api_data_into_json(space_data, json_filename)
+    if multi_query_data is not None and not path.isfile(f"./{json_filename}"):
+        api_data_into_json(multi_query_data, json_filename)
