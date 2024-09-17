@@ -4,7 +4,6 @@ from datetime import datetime
 
 import pandas as pd
 import altair as alt
-from altair import datum
 
 from wrangle import (load_json_data, create_pd_df, remove_duplicate_nan_values_format_cols_df)
 
@@ -62,15 +61,33 @@ def create_books_released_per_year(input_df: pd.DataFrame) -> alt.Chart:
     base = alt.Chart(input_df, title='Book Releases by Year')
 
     chart = base.mark_line().encode(
-        x=alt.X('Year Published:N'),
+        x='Year Published:Q',
         y='Number of Books Published:Q'
     ).interactive()
 
-    # xrule = base.mark_rule(strokeDash=[2, 2]).encode(
-    #     x=datum(1969)
-    # )
+    xrule = base.mark_rule(color="red", strokeDash=[2, 2]).encode(
+        x=alt.datum(1969)
+    )
 
-    # return chart + xrule
+    return chart + xrule
+
+
+def create_rating_languages_scatter(input_df: pd.DataFrame) -> alt.Chart:
+    """Returns a scatter graph with number of languages on the x-axis,
+    and average rating on the y-axis."""
+
+    scatter_df = input_df[["average_rating", "no_of_languages"]]
+
+    scatter_df = scatter_df.rename(columns={"average_rating": "Average Rating",
+                               "no_of_languages": "Number of Languages Published"}
+                                )
+
+    chart = alt.Chart(scatter_df,
+                      title="Book Rating over Number of Languages Published"
+                ).mark_circle(size=200).encode(
+            x='Number of Languages Published:Q',
+            y='Average Rating:Q'
+        ).interactive()
 
     return chart
 
@@ -107,7 +124,7 @@ def create_books_authors_pie_chart(input_df: pd.DataFrame) -> alt.Chart:
 
     author_data = author_data.sort_values(by=['count'], ascending=False)
 
-    # author_data = author_data.iloc[[str(i) for i in range(10)]]
+    author_data = author_data.iloc[[str(i) for i in range(10)]]
 
     author_data = author_data.rename(columns={'author_name': 'Author',
                                               'count': 'Number of Books'})
@@ -119,7 +136,7 @@ def create_books_authors_pie_chart(input_df: pd.DataFrame) -> alt.Chart:
         )
     
     pie = base.mark_arc(outerRadius=200)
-    text = base.mark_text(radius=240, size=10).encode(text='Number of Books:Q')
+    text = base.mark_text(radius=240, size=20).encode(text='Number of Books:Q')
 
     return pie + text
 
@@ -127,20 +144,19 @@ def create_books_authors_pie_chart(input_df: pd.DataFrame) -> alt.Chart:
 def create_books_rating_bar_chart(input_df: pd.DataFrame) -> alt.Chart:
     """Creates a bar chart showcasing the average rating of each book."""
 
-    rating_df = input_df[['book_title', 'average_rating']]
+    input_df['count'] = input_df['average_rating'].value_counts().reset_index()
 
-    rating_df.sort_values(by=['average_rating'], inplace=True, ascending=False)
+    rating_df = input_df[['average_rating', 'count']]
 
-    rating_df = rating_df.iloc[[str(i) for i in range(10)]]
-
-    rating_df = rating_df.rename(columns={'book_title': 'Book Title',
+    rating_df = rating_df.rename(columns={'count': 'Number of Books',
                                           'average_rating': 'Average Rating'})
 
     chart = alt.Chart(rating_df,
-            title="Top 10 Books with the highest rating").mark_bar().encode(
-        x=alt.X('Average Rating:Q'),
-        y='Book Title'
-    ).interactive()
+            title="Distribution of Ratings Across Books"
+            ).mark_circle(size=60).encode(
+                x='Average Rating:Q',
+                y='Number of Books:Q'
+            ).interactive()
 
     return chart
 

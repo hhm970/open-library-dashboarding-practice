@@ -14,6 +14,7 @@ from extract import get_all_queries_responses, api_data_into_json
 from wrangle import (load_json_data, create_pd_df,remove_duplicate_nan_values_format_cols_df)
 from diagrams import (create_books_released_per_year,
                       create_yearly_count_books_100yrs,
+                      create_rating_languages_scatter,
                       create_books_languages_bar_chart,
                       create_books_authors_pie_chart,
                       create_books_rating_bar_chart)
@@ -25,15 +26,9 @@ SPACE_SEARCH_QUERIES=['space', 'space+flight', 'space+station',
                       'space+stations', 'space+ships', 'moon', 'mars']
 
 
-def setup_sidebar() -> None:
-    """Sets up sidebar content on dashboard."""
-    st.sidebar.title("Space-related Books Dashboard")
-    st.sidebar.subheader("Collating information on all texts related to space!")
-
-
-def setup_metrics(df: pd.DataFrame) -> None:
+def setup_metrics(input_df: pd.DataFrame) -> None:
     """Sets up metrics content on dashboard."""
-    st.metric("Total Number of Books", len(df))
+    st.metric("Total Number of Books", len(input_df))
 
 
 def setup_yearly_books_line_chart(input_df: pd.DataFrame) -> None:
@@ -42,6 +37,15 @@ def setup_yearly_books_line_chart(input_df: pd.DataFrame) -> None:
     yearly_books_line_chart = create_books_released_per_year(yearly_df)
 
     st.altair_chart(yearly_books_line_chart, use_container_width=True)
+
+
+def setup_ratings_languages_scatter_chart(input_df: pd.DataFrame) -> None:
+    """Sets up chart for comparing book rating over the number 
+    of languages published."""
+
+    scatter_chart = create_rating_languages_scatter(input_df)
+
+    st.altair_chart(scatter_chart, use_container_width=True)
 
 
 def setup_author_pie_chart(input_df: pd.DataFrame) -> None:
@@ -67,12 +71,6 @@ def setup_2_bar_charts(input_df: pd.DataFrame) -> None:
     with right:
         st.altair_chart(rating_bar_chart,
                         use_container_width=True)
-
-
-def setup_sidebar() -> None:
-    """Sets up sidebar content on dashboard."""
-    st.sidebar.title("Space Books Dashboard")
-    st.sidebar.subheader("Collating information on all books space-related.")
 
 
 def extract_wrangle_pd_df() -> pd.DataFrame:
@@ -116,7 +114,11 @@ if __name__ == "__main__":
 
     load_dotenv()
 
+    st.set_page_config(page_title='Space Books Dashboard',
+                       page_icon=":rocket:", layout="wide")
+
     space_df = extract_wrangle_pd_df()
+    space_df_book_titles = space_df["book_title"].to_list()
 
     st.title("Welcome!")
     st.write("---")
@@ -124,10 +126,24 @@ if __name__ == "__main__":
 
     setup_metrics(space_df)
 
-    setup_sidebar()
+    with st.sidebar:
+        st.title("Space-related Books Dashboard")
+        st.subheader("Collating information on all texts related to space!")
+        st.write("---")
 
-    setup_yearly_books_line_chart(space_df)
+        st.title("Book Filter")
 
-    setup_2_bar_charts(space_df)
+        creator_options = space_df_book_titles
+        filtered_input = st.multiselect("Available Books",
+                                       options=creator_options,
+                                       default=creator_options)
 
-    setup_author_pie_chart(space_df)
+    filtered_space_df = space_df[space_df["book_title"].isin(filtered_input)]
+
+    setup_yearly_books_line_chart(filtered_space_df)
+
+    setup_ratings_languages_scatter_chart(filtered_space_df)
+
+    setup_2_bar_charts(filtered_space_df)
+
+    setup_author_pie_chart(filtered_space_df)
