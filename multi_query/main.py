@@ -44,26 +44,36 @@ def setup_yearly_books_line_chart(input_df: pd.DataFrame) -> None:
     st.altair_chart(yearly_books_line_chart, use_container_width=True)
 
 
-def setup_3_charts(input_df: pd.DataFrame) -> None:
+def setup_author_pie_chart(input_df: pd.DataFrame) -> None:
+    """Sets up chart for the number of books released by each author."""
+
+    author_pie_chart = create_books_authors_pie_chart(input_df)
+
+    st.altair_chart(author_pie_chart, use_container_width=True)
+
+
+def setup_2_bar_charts(input_df: pd.DataFrame) -> None:
     """Sets up chart for counting books by number of languages published,
-    a chart to see the number of books released by each author, and a chart
-    for the average rating per book."""
+    and a chart for the average rating per book."""
 
     language_bar_chart = create_books_languages_bar_chart(input_df)
-    author_pie_chart = create_books_authors_pie_chart(input_df)
     rating_bar_chart = create_books_rating_bar_chart(input_df)
 
-    left, middle, right = st.columns(3)
+    left, right = st.columns(2)
 
     with left:
         st.altair_chart(language_bar_chart, use_container_width=True)
-    with middle:
-        st.altair_chart(author_pie_chart,
-                        use_container_width=True)
+
     with right:
         st.altair_chart(rating_bar_chart,
                         use_container_width=True)
-        
+
+
+def setup_sidebar() -> None:
+    """Sets up sidebar content on dashboard."""
+    st.sidebar.title("Space Books Dashboard")
+    st.sidebar.subheader("Collating information on all books space-related.")
+
 
 def extract_wrangle_pd_df() -> pd.DataFrame:
     """Contains relevant steps for extraction and wrangling of data."""
@@ -114,6 +124,10 @@ if __name__ == "__main__":
 
     setup_metrics(space_df)
 
+    setup_sidebar()
+
     setup_yearly_books_line_chart(space_df)
 
-    setup_3_charts(space_df)
+    setup_2_bar_charts(space_df)
+
+    setup_author_pie_chart(space_df)

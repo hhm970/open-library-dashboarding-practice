@@ -59,11 +59,18 @@ def create_yearly_count_books_100yrs(input_df: pd.DataFrame) -> pd.DataFrame:
 def create_books_released_per_year(input_df: pd.DataFrame) -> alt.Chart:
     """Returns a line chart showcasing the number of books released per year."""
 
-    chart = alt.Chart(input_df, 
-                title='Book Releases by Year').mark_line().encode(
+    base = alt.Chart(input_df, title='Book Releases by Year')
+
+    chart = base.mark_line().encode(
         x=alt.X('Year Published:N'),
         y='Number of Books Published:Q'
-    )
+    ).interactive()
+
+    # xrule = base.mark_rule(strokeDash=[2, 2]).encode(
+    #     x=datum(1969)
+    # )
+
+    # return chart + xrule
 
     return chart
 
@@ -86,7 +93,7 @@ def create_books_languages_bar_chart(input_df: pd.DataFrame) -> alt.Chart:
         ).mark_bar().encode(
             x=alt.X('Number of Languages:Q'),
             y='Book Title:N'
-        )
+        ).interactive()
 
     return chart
 
@@ -100,19 +107,21 @@ def create_books_authors_pie_chart(input_df: pd.DataFrame) -> alt.Chart:
 
     author_data = author_data.sort_values(by=['count'], ascending=False)
 
-    author_data = author_data.iloc[[str(i) for i in range(10)]]
+    # author_data = author_data.iloc[[str(i) for i in range(10)]]
 
     author_data = author_data.rename(columns={'author_name': 'Author',
                                               'count': 'Number of Books'})
 
-    chart = alt.Chart(author_data,
+    base = alt.Chart(author_data,
         title="Top 10 authors with the most books published"
-        ).mark_arc().encode(
-            color='Author',
-            theta='Number of Books:Q'
+        ).encode(alt.Theta('Number of Books:Q').stack(True),
+            color='Author:N'
         )
+    
+    pie = base.mark_arc(outerRadius=200)
+    text = base.mark_text(radius=240, size=10).encode(text='Number of Books:Q')
 
-    return chart
+    return pie + text
 
 
 def create_books_rating_bar_chart(input_df: pd.DataFrame) -> alt.Chart:
@@ -127,11 +136,11 @@ def create_books_rating_bar_chart(input_df: pd.DataFrame) -> alt.Chart:
     rating_df = rating_df.rename(columns={'book_title': 'Book Title',
                                           'average_rating': 'Average Rating'})
 
-    chart = alt.Chart(rating_df, 
+    chart = alt.Chart(rating_df,
             title="Top 10 Books with the highest rating").mark_bar().encode(
         x=alt.X('Average Rating:Q'),
         y='Book Title'
-    )
+    ).interactive()
 
     return chart
 

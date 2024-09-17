@@ -13,11 +13,9 @@ the date the response was extracted, as well as the search query.
 
 from datetime import datetime
 import json
-from os import environ as ENV, path
+from os import path
 
 import requests
-from dotenv import load_dotenv
-
 
 API_BASE_URL = "https://openlibrary.org/search"
 SEARCH_QUERIES_LIST=['space', 'space+flight', 'space+station',
