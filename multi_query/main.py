@@ -28,7 +28,22 @@ SPACE_SEARCH_QUERIES=['space', 'space+flight', 'space+station',
 
 def setup_metrics(input_df: pd.DataFrame) -> None:
     """Sets up metrics content on dashboard."""
-    st.metric("Total Number of Books", len(input_df))
+    left, middle, right = st.columns(3)
+
+    total_books = len(input_df)
+    total_rating = input_df['average_rating'].sum()
+    total_languages = input_df['no_of_languages'].sum()
+
+    with left:
+        st.metric("Total Number of Books", total_books)
+
+    with middle:
+        st.metric("Aggregated Average Rating for all Books", 
+                  round(total_rating/total_books, 2))
+        
+    with right:
+        st.metric("Aggregated Average Number of Languages Published",
+                  round(total_languages/total_books, 2))
 
 
 def setup_yearly_books_line_chart(input_df: pd.DataFrame) -> None:

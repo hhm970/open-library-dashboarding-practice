@@ -76,17 +76,24 @@ def create_rating_languages_scatter(input_df: pd.DataFrame) -> alt.Chart:
     """Returns a scatter graph with number of languages on the x-axis,
     and average rating on the y-axis."""
 
-    scatter_df = input_df[["average_rating", "no_of_languages"]]
+    scatter_df = input_df[["book_title", "author_name",
+                           "average_rating", "no_of_languages"]]
 
     scatter_df = scatter_df.rename(columns={"average_rating": "Average Rating",
-                               "no_of_languages": "Number of Languages Published"}
-                                )
+                               "no_of_languages": "Number of Languages Published",
+                               "book_title": "Book Title",
+                               "author_name": "Author"
+                               })
 
     chart = alt.Chart(scatter_df,
                       title="Book Rating over Number of Languages Published"
                 ).mark_circle(size=200).encode(
             x='Number of Languages Published:Q',
-            y='Average Rating:Q'
+            y='Average Rating:Q',
+            tooltip=["Book Title",
+                     "Author",
+                     "Average Rating",
+                     "Number of Languages Published"]
         ).interactive()
 
     return chart
@@ -144,21 +151,33 @@ def create_books_authors_pie_chart(input_df: pd.DataFrame) -> alt.Chart:
 def create_books_rating_bar_chart(input_df: pd.DataFrame) -> alt.Chart:
     """Creates a bar chart showcasing the average rating of each book."""
 
-    input_df['count'] = input_df['average_rating'].value_counts().reset_index()
+    total_average_rating = input_df['average_rating'].sum()
 
-    rating_df = input_df[['average_rating', 'count']]
+    total_no_of_ratings = len(input_df)
 
-    rating_df = rating_df.rename(columns={'count': 'Number of Books',
+    agg_average_rating = total_average_rating/total_no_of_ratings
+
+    count_df = input_df['average_rating'].value_counts().reset_index()
+
+    count_df.sort_values(by=['average_rating'], inplace=True, ascending=False)
+
+    rating_df = count_df.rename(columns={'count': 'Number of Books',
                                           'average_rating': 'Average Rating'})
 
-    chart = alt.Chart(rating_df,
+    base = alt.Chart(rating_df,
             title="Distribution of Ratings Across Books"
-            ).mark_circle(size=60).encode(
+            ).encode(
                 x='Average Rating:Q',
                 y='Number of Books:Q'
-            ).interactive()
+            )
 
-    return chart
+    chart = base.mark_line().interactive()
+
+    xrule = base.mark_rule(color="red", strokeDash=[2, 2]).encode(
+        x=alt.datum(agg_average_rating)
+    )
+
+    return chart + xrule
 
 
 if __name__ == "__main__":
