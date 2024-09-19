@@ -32,7 +32,13 @@ In each folder's directory to download the requirements use this command:
 pip3 install -r requirements.txt
   ```
 
-It is advised to run this command in a virtual environment (where each individual directory has its own virtual environment).
+It is advised to run this command in a virtual environment (where each individual directory has its own virtual environment). This can be set up via the commands
+
+```sh
+python3 -m venv venv
+
+source ./venv/bin/activate
+```
 
 ## Overview of Directories
 
@@ -41,9 +47,9 @@ This repository contains the following directories:
 - `single_query`: Contains code related to extracting and wrangling data, given a singular search query.
     - Uses the environment variable `SEARCH_QUERY_TITLE`; more details on this are provided in the doc-string of `single_query/extract.py`.
     - To run the code in this directory, input `python3 main.py` into the command-line interface.
-    - An example of some extracted JSON data is in `single_query/example_extracted.json`.
+    - An example of some extracted `JSON` data is in `single_query/example_extracted.json`.
 
 - `multi_query`: Contains code related to extracting and wrangling data, given multiple search queries, and displaying it via a Streamlit dashboard.
     - To run the code in this directory, input `python3 -m streamlit run main.py` into the command-line interface.
     - An example of possible extracted JSON data is not provided, due to size constraints. Though an example of the wrangled `pandas` DataFrame is available in CSV format at `multi_query/example_space.csv`.
-    - Contains another directory `example_diagrams`, containing examples of possible data visualisations for the Streamlit dashboard.
+    - Contains another directory `example_diagrams`, containing examples of possible data visualisations for the `streamlit` dashboard.
