@@ -60,12 +60,12 @@ def create_books_released_per_year(input_df: pd.DataFrame) -> alt.Chart:
 
     base = alt.Chart(input_df, title='Book Releases by Year')
 
-    chart = base.mark_line().encode(
+    chart = base.mark_line(point=True).encode(
         x='Year Published:Q',
         y='Number of Books Published:Q'
     ).interactive()
 
-    xrule = base.mark_rule(color="red", strokeDash=[2, 2]).encode(
+    xrule = base.mark_rule(color="red").encode(
         x=alt.datum(1969)
     )
 
@@ -78,6 +78,13 @@ def create_rating_languages_scatter(input_df: pd.DataFrame) -> alt.Chart:
 
     scatter_df = input_df[["book_title", "author_name",
                            "average_rating", "no_of_languages"]]
+    
+    total_books = len(input_df)
+    total_rating = input_df['average_rating'].sum()
+    total_languages = input_df['no_of_languages'].sum()
+
+    agg_avg_rating = round(total_rating/total_books, 2)
+    agg_avg_languages = round(total_languages/total_books, 2)
 
     scatter_df = scatter_df.rename(columns={"average_rating": "Average Rating",
                                "no_of_languages": "Number of Languages Published",
@@ -85,38 +92,50 @@ def create_rating_languages_scatter(input_df: pd.DataFrame) -> alt.Chart:
                                "author_name": "Author"
                                })
 
-    chart = alt.Chart(scatter_df,
-                      title="Book Rating over Number of Languages Published"
-                ).mark_circle(size=200).encode(
-            x='Number of Languages Published:Q',
-            y='Average Rating:Q',
-            tooltip=["Book Title",
-                     "Author",
-                     "Average Rating",
-                     "Number of Languages Published"]
-        ).interactive()
+    base = alt.Chart(scatter_df,
+                      title="Book Rating over Number of Languages Published")
 
-    return chart
+    chart = base.mark_circle(size=200).encode(x='Number of Languages Published:Q',
+                                        y='Average Rating:Q',
+                                        tooltip=["Book Title",
+                                                "Author",
+                                                "Average Rating",
+                                        "Number of Languages Published"]
+                                    ).interactive()
+
+    xrule = base.mark_rule(color="cyan", strokeDash=[2, 2]).encode(
+        x=alt.datum(agg_avg_languages)
+    )
+
+    yrule = base.mark_rule(color="magenta", strokeDash=[2, 2]).encode(
+        y=alt.datum(agg_avg_rating)
+    )
+
+    return chart + yrule + xrule
 
 
 def create_books_languages_bar_chart(input_df: pd.DataFrame) -> alt.Chart:
     """Creates a bar chart showcasing how many languages a given book has
     been published in."""
 
-    language_df = input_df[['book_title', 'no_of_languages']]
+    language_df = input_df[['book_title', 'no_of_languages', 'author_name']]
 
     language_df.sort_values(by=['no_of_languages'], inplace=True, ascending=False)
 
     language_df = language_df.iloc[[str(i) for i in range(10)]]
 
     language_df = language_df.rename(columns={'book_title': 'Book Title',
-                                'no_of_languages': 'Number of Languages'})
+                                'no_of_languages': 'Number of Languages',
+                                'author_name': 'Author'})
 
     chart = alt.Chart(language_df,
         title="Top 10 books published in the most languages"
         ).mark_bar().encode(
             x=alt.X('Number of Languages:Q'),
-            y='Book Title:N'
+            y='Book Title:N',
+            tooltip=["Book Title",
+                     "Author",
+                     "Number of Languages"]
         ).interactive()
 
     return chart
@@ -148,8 +167,9 @@ def create_books_authors_pie_chart(input_df: pd.DataFrame) -> alt.Chart:
     return pie + text
 
 
-def create_books_rating_bar_chart(input_df: pd.DataFrame) -> alt.Chart:
-    """Creates a bar chart showcasing the average rating of each book."""
+def create_books_rating_line_chart(input_df: pd.DataFrame) -> alt.Chart:
+    """Creates a line chart showcasing the distribution of
+    average ratings of each book."""
 
     total_average_rating = input_df['average_rating'].sum()
 
@@ -171,7 +191,7 @@ def create_books_rating_bar_chart(input_df: pd.DataFrame) -> alt.Chart:
                 y='Number of Books:Q'
             )
 
-    chart = base.mark_line().interactive()
+    chart = base.mark_line(interpolate="monotone").interactive()
 
     xrule = base.mark_rule(color="red", strokeDash=[2, 2]).encode(
         x=alt.datum(agg_average_rating)

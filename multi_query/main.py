@@ -17,7 +17,7 @@ from diagrams import (create_books_released_per_year,
                       create_rating_languages_scatter,
                       create_books_languages_bar_chart,
                       create_books_authors_pie_chart,
-                      create_books_rating_bar_chart)
+                      create_books_rating_line_chart)
 
 API_BASE_URL = "https://openlibrary.org/search"
 SPACE_SEARCH_QUERIES=['space', 'space+flight', 'space+station',
@@ -76,7 +76,7 @@ def setup_2_bar_charts(input_df: pd.DataFrame) -> None:
     and a chart for the average rating per book."""
 
     language_bar_chart = create_books_languages_bar_chart(input_df)
-    rating_bar_chart = create_books_rating_bar_chart(input_df)
+    rating_bar_chart = create_books_rating_line_chart(input_df)
 
     left, right = st.columns(2)
 
