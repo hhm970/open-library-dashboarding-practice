@@ -6,3 +6,4 @@ pylint
 streamlit
 altair
 vl-convert-python
+docker

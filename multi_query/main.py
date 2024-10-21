@@ -7,11 +7,11 @@ from datetime import datetime
 from os import path
 
 import pandas as pd
-from dotenv import load_dotenv
 import streamlit as st
 
 from extract import get_all_queries_responses, api_data_into_json
-from wrangle import (load_json_data, create_pd_df,remove_duplicate_nan_values_format_cols_df)
+from wrangle import (load_json_data, create_pd_df,
+                     remove_duplicate_nan_values_format_cols_df)
 from diagrams import (create_books_released_per_year,
                       create_yearly_count_books_100yrs,
                       create_rating_languages_scatter,
@@ -20,10 +20,10 @@ from diagrams import (create_books_released_per_year,
                       create_books_rating_line_chart)
 
 API_BASE_URL = "https://openlibrary.org/search"
-SPACE_SEARCH_QUERIES=['space', 'space+flight', 'space+station',
-                      'outer+space', 'space+exploration', 'space+and+time',
-                      'space+vehicles', 'space+warfare', 'space+shuttles',
-                      'space+stations', 'space+ships', 'moon', 'mars']
+SPACE_SEARCH_QUERIES = ['space', 'space+flight', 'space+station',
+                        'outer+space', 'space+exploration', 'space+and+time',
+                        'space+vehicles', 'space+warfare', 'space+shuttles',
+                        'space+stations', 'space+ships', 'moon', 'mars']
 
 
 def setup_metrics(input_df: pd.DataFrame) -> None:
@@ -38,9 +38,9 @@ def setup_metrics(input_df: pd.DataFrame) -> None:
         st.metric("Total Number of Books", total_books)
 
     with middle:
-        st.metric("Aggregated Average Rating for all Books", 
+        st.metric("Aggregated Average Rating for all Books",
                   round(total_rating/total_books, 2))
-        
+
     with right:
         st.metric("Aggregated Average Number of Languages Published",
                   round(total_languages/total_books, 2))
@@ -76,7 +76,7 @@ def setup_2_bar_charts(input_df: pd.DataFrame) -> None:
     and a chart for the average rating per book."""
 
     language_bar_chart = create_books_languages_bar_chart(input_df)
-    rating_bar_chart = create_books_rating_line_chart(input_df)
+    rating_line_chart = create_books_rating_line_chart(input_df)
 
     left, right = st.columns(2)
 
@@ -84,7 +84,7 @@ def setup_2_bar_charts(input_df: pd.DataFrame) -> None:
         st.altair_chart(language_bar_chart, use_container_width=True)
 
     with right:
-        st.altair_chart(rating_bar_chart,
+        st.altair_chart(rating_line_chart,
                         use_container_width=True)
 
 
@@ -93,9 +93,9 @@ def extract_wrangle_pd_df() -> pd.DataFrame:
 
     today_date = datetime.today().strftime('%Y-%m-%d')
 
-    json_filename = f"{today_date}_multi.json"
+    json_filename = f"2024-10-02_multi.json"
 
-    csv_filename = f"{today_date}_multi.csv"
+    csv_filename = f"2024-10-02_multi.csv"
 
     if not path.isfile(f"./{json_filename}"):
 
@@ -127,8 +127,6 @@ def extract_wrangle_pd_df() -> pd.DataFrame:
 
 if __name__ == "__main__":
 
-    load_dotenv()
-
     st.set_page_config(page_title='Space Books Dashboard',
                        page_icon=":rocket:", layout="wide")
 
@@ -150,8 +148,8 @@ if __name__ == "__main__":
 
         creator_options = space_df_book_titles
         filtered_input = st.multiselect("Available Books",
-                                       options=creator_options,
-                                       default=creator_options)
+                                        options=creator_options,
+                                        default=creator_options)
 
     filtered_space_df = space_df[space_df["book_title"].isin(filtered_input)]
 

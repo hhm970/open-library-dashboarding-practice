@@ -18,10 +18,10 @@ from os import path
 import requests
 
 API_BASE_URL = "https://openlibrary.org/search"
-SEARCH_QUERIES_LIST=['space', 'space+flight', 'space+station',
-                      'outer+space', 'space+exploration', 'space+and+time',
-                      'space+vehicles', 'space+warfare', 'space+shuttles',
-                      'space+stations', 'space+ships', 'moon', 'mars']
+SEARCH_QUERIES_LIST = ['space', 'space+flight', 'space+station',
+                       'outer+space', 'space+exploration', 'space+and+time',
+                       'space+vehicles', 'space+warfare', 'space+shuttles',
+                       'space+stations', 'space+ships', 'moon', 'mars']
 
 
 def get_all_queries_responses() -> list[dict]:
@@ -33,7 +33,7 @@ def get_all_queries_responses() -> list[dict]:
     for query in SEARCH_QUERIES_LIST:
 
         response = requests.get(f"{API_BASE_URL}.json?q={query}",
-            timeout=15)
+                                timeout=120)
 
         if response.status_code == 200:
 
@@ -41,7 +41,7 @@ def get_all_queries_responses() -> list[dict]:
 
         else:
             print("Failed to retrieve data from the API. Status code:",
-            response.status_code)
+                  response.status_code)
 
     return result
 
